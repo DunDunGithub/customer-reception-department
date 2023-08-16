@@ -44,7 +44,7 @@ function ChooseDriver(props) {
         setLoading(true); // Show loading popup
         try {
             const response = await axios.get(
-                'http://localhost:3000/customer/driver',
+                `http://${process.env.REACT_APP_SERVER_HOST}:${process.env.REACT_APP_SERVER_PORT}/customer/driver`,
             );
             setRecords(response.data);
         } catch (error) {

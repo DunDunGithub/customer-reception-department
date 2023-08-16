@@ -38,7 +38,7 @@ function AddressGoogle(props) {
         // console.log('TERM: ', searchTerm);
         const encodedAddress = encodeURIComponent(searchTerm);
         // console.log('API ADDRESS', encodedAddress);
-        const url = `http://localhost:3000/location/search-api/test?address=${encodedAddress}`;
+        const url = `http://${process.env.REACT_APP_SERVER_HOST}:${process.env.REACT_APP_SERVER_PORT}/location/search-api/test?address=${encodedAddress}`;
         // console.log('URL', url);
         try {
             setRecords([]);

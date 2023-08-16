@@ -38,24 +38,24 @@ function Body() {
 
     const [loading, setLoading] = useState(false);
 
-    const fetchData = async () => {
-        setLoading(true); // Show loading popup
-        try {
-            const response = await axios.get(
-                'http://localhost:3000/location/all/test',
-            );
-            setRecords(response.data.hits.hits);
-            setFilterRecords(response.data.hits.hits);
-        } catch (error) {
-            console.log('ERROR', error);
-        } finally {
-            setLoading(false);
-        }
-    };
+    // const fetchData = async () => {
+    //     setLoading(true); // Show loading popup
+    //     try {
+    //         const response = await axios.get(
+    //             'http://localhost:3000/location/all/test',
+    //         );
+    //         setRecords(response.data.hits.hits);
+    //         setFilterRecords(response.data.hits.hits);
+    //     } catch (error) {
+    //         console.log('ERROR', error);
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // };
 
-    useEffect(() => {
-        fetchData();
-    }, []);
+    // useEffect(() => {
+    //     fetchData();
+    // }, []);
 
     const [records, setRecords] = useState([]);
     const [filterRecords, setFilterRecords] = useState([]);
@@ -77,14 +77,13 @@ function Body() {
 
     const handleSelectAddress = (address) => {
         setSelectedAddress(address);
-        bookingData.address_id=address.place_id
+        bookingData.address_id = address.place_id;
         console.log(address);
     };
 
-
     const handleSelectDriver = (driver) => {
         setSelectedDriver(driver);
-        bookingData.driver_id=driver.id
+        bookingData.driver_id = driver.id;
         console.log(driver);
     };
 
@@ -107,7 +106,7 @@ function Body() {
         e.preventDefault();
 
         axios
-            .post('http://localhost:3000/customer', bookingData)
+            .post(`http://${process.env.REACT_APP_SERVER_HOST}:${process.env.REACT_APP_SERVER_PORT}/customer`, bookingData)
             .then((res) => {
                 setBookingData({
                     phone: '',
@@ -118,6 +117,22 @@ function Body() {
                 });
             })
             .catch((err) => console.log(err));
+    };
+
+    const handleSearchAddressHistory = async () => {
+        const searchTerm = document.getElementById('searchInput').value;
+        // console.log('TERM: ', searchTerm);
+        const encodedAddress = encodeURIComponent(searchTerm);
+        // console.log('API ADDRESS', encodedAddress);
+        const url = `http://${process.env.REACT_APP_SERVER_HOST}:${process.env.REACT_APP_SERVER_PORT}/location/search/test?address=${encodedAddress}`;
+        console.log('URL', url);
+        try {
+            setRecords([]);
+            const response = await axios.get(url);
+            setRecords(response.data);
+        } catch (error) {
+            console.log('ERROR', error);
+        }
     };
 
     return (
@@ -175,9 +190,7 @@ function Body() {
                         <input
                             name="driver"
                             placeholder=""
-                            value={
-                                selectedDriver ? selectedDriver.name : ''
-                            }
+                            value={selectedDriver ? selectedDriver.name : ''}
                             onClick={() => setDriverPopup(true)}
                             required
                         />
@@ -194,16 +207,20 @@ function Body() {
 
                 <div className={cx('history')}>
                     Lịch sử địa chỉ
-                    <input
-                        type="text"
-                        placeholder={`Search...`}
-                        style={{
-                            padding: '4px',
-                            width: '250px',
-                            marginTop: '10px',
-                        }}
-                        onChange={handleFilter}
-                    />
+                    <div>
+                        <input
+                            id="searchInput"
+                            type="text"
+                            placeholder={`Search...`}
+                            style={{
+                                padding: '4px',
+                                width: '250px',
+                                marginTop: '10px',
+                            }}
+                            onChange={handleFilter}
+                        />
+                        <button onClick={handleSearchAddressHistory}>Search</button>
+                    </div>
                     <DataTable
                         columns={column}
                         data={records}
