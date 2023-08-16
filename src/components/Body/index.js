@@ -82,10 +82,10 @@ function Body() {
     };
 
 
-    const handleSelectDriver = (address) => {
-        setSelectedAddress(address);
-        bookingData.address_id=address.place_id
-        console.log(address);
+    const handleSelectDriver = (driver) => {
+        setSelectedDriver(driver);
+        bookingData.driver_id=driver.id
+        console.log(driver);
     };
 
     const [bookingData, setBookingData] = useState({
@@ -175,8 +175,10 @@ function Body() {
                         <input
                             name="driver"
                             placeholder=""
+                            value={
+                                selectedDriver ? selectedDriver.name : ''
+                            }
                             onClick={() => setDriverPopup(true)}
-                            onChange={() => {}}
                             required
                         />
                     </div>

@@ -31,18 +31,10 @@ function ChooseDriver(props) {
         {
             name: '',
             cell: (row) => (
-                <button onClick={() => setSelectedDriver(row.name)}>
+                <button onClick={() => handleSelect(row)}>
                     Choose this driver
                 </button>
             ),
-        },
-    ];
-
-    const templateData = [
-        {
-            name: 'Thai Chi Hien',
-            cabSeats: '4',
-            phone: '03992827192',
         },
     ];
 
@@ -52,7 +44,7 @@ function ChooseDriver(props) {
         setLoading(true); // Show loading popup
         try {
             const response = await axios.get(
-                'http://localhost:3000/location/all/driver',
+                'http://localhost:3000/customer/driver',
             );
             setRecords(response.data);
         } catch (error) {
@@ -68,6 +60,7 @@ function ChooseDriver(props) {
 
     const handleSelect = (driver) => {
         setSelectedDriver(driver);
+        props.onSelectDriver(driver);
         props.setTrigger(false)
     };
 
@@ -90,17 +83,6 @@ function ChooseDriver(props) {
                     columns={column}
                     data={records}
                     pagination
-                    onSelectedRowsChange={(state) => {
-                        if (state.selectedCount === 1) {
-                            // Get the selected row data
-                            const selectedRowData =
-                                state.selectedRows[0]._source;
-                            const selectedAddress = selectedRowData.address;
-                            handleSelect(selectedAddress); // Call the function to store the selected address
-                        } else {
-                            setSelectedDriver(null); // Reset selected address
-                        }
-                    }}
                 />
             </div>
         </div>
